@@ -1,6 +1,8 @@
 # ![Node/Hapi.JS/Mongoose Example App](.github/project-logo.png)
 
 [![Build Status](https://travis-ci.org/guillaumemaka/realworld-starter-kit-hapijs.svg?branch=master)](https://travis-ci.org/guillaumemaka/realworld-starter-kit-hapijs)
+[![Code Climate](https://codeclimate.com/github/guillaumemaka/realworld-starter-kit-hapijs/badges/gpa.svg)](https://codeclimate.com/github/guillaumemaka/realworld-starter-kit-hapijs)
+[![Test Coverage](https://codeclimate.com/github/guillaumemaka/realworld-starter-kit-hapijs/badges/coverage.svg)](https://codeclimate.com/github/guillaumemaka/realworld-starter-kit-hapijs/coverage)
 
 > ### Example Hapi.JS (Hapi.JS + Mongoose) codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) API spec.
 
