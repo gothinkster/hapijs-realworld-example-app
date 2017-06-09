@@ -1,0 +1,36 @@
+{
+  "name": "realworl-starter-kit-hapijs",
+  "version": "0.0.1",
+  "description": "Realworl Starter kit HapiJS implementation",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "./node_modules/.bin/lab",
+    "test-cov-html": "./node_modules/.bin/lab -r html -o coverage.html"
+  },
+  "keywords": [
+    "realworl",
+    "hapijs",
+    "node",
+    "javascript"
+  ],
+  "author": "Guillaume Maka",
+  "license": "MIT",
+  "devDependencies": {
+    "code": "^4.0.0",
+    "lab": "^13.1.0",
+    "labbable": "^2.1.1"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "boom": "^5.1.0",
+    "glue": "^4.1.0",
+    "hapi": "^16.4.2",
+    "hapi-auth-jwt2": "^7.2.4",
+    "joi": "^10.5.2",
+    "jsonwebtoken": "^7.4.1",
+    "mongoose": "^4.10.5",
+    "mongoose-unique-validator": "^1.0.5",
+    "node-slug": "0.0.2"
+  }
+}
