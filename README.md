@@ -1,4 +1,4 @@
-# ![Node/Hapi.JS/Mongoose Example App](project-logo.png)
+# ![Node/Hapi.JS/Mongoose Example App](.github/project-logo.png)
 
 > ### Example Hapi.JS (Hapi.JS + Mongoose) codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) API spec.
 
