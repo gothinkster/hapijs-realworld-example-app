@@ -1,6 +1,6 @@
 module.exports = {
-  coverage: true,
-  threshold: 100,
+  coverage: false,
+  // threshold: 100,
   colors: true,
   timeout: 2000,
   debug: true,
