@@ -16,8 +16,13 @@
   ],
   "author": "Guillaume Maka",
   "license": "MIT",
+  "repository": {
+    "url": "https://github.com/guillaumemaka/realworld-starter-kit-hapijs"
+  },
   "devDependencies": {
     "code": "^4.0.0",
+    "database-cleaner": "^1.2.0",
+    "factory-girl": "^4.3.0",
     "lab": "^13.1.0",
     "labbable": "^2.1.1"
   },
@@ -31,6 +36,7 @@
     "jsonwebtoken": "^7.4.1",
     "mongoose": "^4.10.5",
     "mongoose-unique-validator": "^1.0.5",
-    "node-slug": "0.0.2"
+    "node-slug": "0.0.2",
+    "standard": "^10.0.2"
   }
 }

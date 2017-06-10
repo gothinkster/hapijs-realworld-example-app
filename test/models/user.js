@@ -11,8 +11,12 @@ const after = lab.after
 const it = lab.it
 const expect = Code.expect
 
+const DatabaseCleaner = require('database-cleaner')
+const databaseCleaner = new DatabaseCleaner('mongodb') // type = 'mongodb|redis|couchdb'
+
 describe('User', () => {
   let server
+  let user
 
   before((done) => {
         // Callback fires once the server is initialized
@@ -30,7 +34,7 @@ describe('User', () => {
 
     // server is now available to be tested
   it('can be save', (done) => {
-    let user = new server.app.db.User({
+    user = new server.app.db.User({
       username: 'user1',
       email: 'user1@example.com'
     })
@@ -60,7 +64,9 @@ describe('User', () => {
     })
   })
 
-  after(() => {
-    return server.app.db.User.find({}).remove()
+  after((done) => {
+    databaseCleaner.clean(server.app.db.link, () => {
+      return done()
+    })
   })
 })
