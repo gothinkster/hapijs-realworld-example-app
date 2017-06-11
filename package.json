@@ -4,7 +4,7 @@
   "description": "Realworl Starter kit HapiJS implementation",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "./node_modules/.bin/nodemon",
     "test": "./node_modules/.bin/lab",
     "test-cov-html": "./node_modules/.bin/lab -r html -o coverage.html"
   },
@@ -26,6 +26,7 @@
     "inert": "^4.2.0",
     "lab": "^13.1.0",
     "labbable": "^2.1.1",
+    "nodemon": "^1.11.0",
     "tv": "^6.1.0",
     "vision": "^4.1.1"
   },
