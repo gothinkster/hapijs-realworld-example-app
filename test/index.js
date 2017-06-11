@@ -1,3 +1,5 @@
+'use strict'
+
 const Code = require('code')
 const Lab = require('lab')
 const LabbableServer = require('../lib')
@@ -8,7 +10,7 @@ const before = lab.before
 const it = lab.it
 const expect = Code.expect
 
-describe('server initialization', () => {
+describe('index', () => {
   let server
 
   before((done) => {
@@ -38,6 +40,8 @@ describe('server initialization', () => {
     it('return status 200', (done) => {
       server.inject('/api/status', (res) => {
         expect(res.statusCode).to.be.equal(200)
+        let jsonResponse = JSON.parse(res.payload)
+        expect(jsonResponse.status).to.equal('UP')
         done()
       })
     })

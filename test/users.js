@@ -1,3 +1,5 @@
+'use strict'
+
 const Code = require('code')
 const Lab = require('lab')
 const LabbableServer = require('../lib')
@@ -8,10 +10,16 @@ const before = lab.before
 const after = lab.after
 const it = lab.it
 const expect = Code.expect
+const JWT = require('jsonwebtoken')
+const config = require('../lib/config')
+const factory = require('./factories')
+const DatabaseCleaner = require('database-cleaner')
+const databaseCleaner = new DatabaseCleaner('mongodb') // type = 'mongodb|redis|couchdb'
 
 describe('users endpoint', () => {
   let server
   let user
+  let userAuth
 
   before((done) => {
     // Callback fires once the server is initialized
@@ -23,15 +31,14 @@ describe('users endpoint', () => {
 
       server = srv
 
-      user = new server.app.db.User({
-        username: 'user1',
-        email: 'user1@example.com'
+      return factory.create('user').then((u) => {
+        user = u
+        userAuth = user.toAuthJSON()
+        userAuth.image = user.image || null
+        userAuth.bio = user.bio || null
+
+        return done()
       })
-
-      user.setPassword('password')
-      user.save()
-
-      return done()
     })
   })
 
@@ -42,7 +49,7 @@ describe('users endpoint', () => {
         url: '/api/users/login',
         payload: {
           'user': {
-            'email': 'user1@example.com',
+            'email': user.email,
             'password': 'password'
           }
         }
@@ -50,9 +57,11 @@ describe('users endpoint', () => {
         var payload = JSON.parse(res.payload)
         expect(res.statusCode).to.be.equal(200)
         expect(payload).to.be.an.object()
+        expect(payload.user).to.not.be.undefined()
+        expect(payload.user).to.include(['email', 'username', 'token', 'image', 'bio'])
         expect(payload.user.token).to.not.be.empty()
-        expect(payload.user.username).to.be.equal('user1')
-        expect(payload.user.email).to.be.equal('user1@example.com')
+        expect(payload.user.username).to.be.equal(user.username)
+        expect(payload.user.email).to.be.equal(user.email)
         done()
       })
     })
@@ -63,7 +72,7 @@ describe('users endpoint', () => {
         url: '/api/users/login',
         payload: {
           'user': {
-            'email': 'user1@example.com',
+            'email': user.email,
             'password': 'invalidpassword'
           }
         }
@@ -149,23 +158,26 @@ describe('users endpoint', () => {
 
   describe('register', () => {
     it('should register a user with valid information', (done) => {
-      server.inject({
-        method: 'POST',
-        url: '/api/users',
-        payload: {
-          user: {
-            email: 'user2@example.com',
-            username: 'user2',
-            password: 'password'
+      factory.build('user', {username: 'stansmith', email: 'stansmith@example.com'}).then((u) => {
+        server.inject({
+          method: 'POST',
+          url: '/api/users',
+          payload: {
+            user: {
+              email: u.email,
+              username: u.username,
+              password: 'password'
+            }
           }
-        }
-      }, (res) => {
-        var userResponse = JSON.parse(res.payload)
-        expect(res.statusCode).to.be.equal(200)
-        expect(userResponse.user.username).to.be.equal('user2')
-        expect(userResponse.user.email).to.be.equal('user2@example.com')
-        expect(userResponse.user.token).to.not.be.empty()
-        done()
+        }, (res) => {
+          expect(res.statusCode).to.be.equal(200)
+          var userResponse = JSON.parse(res.payload)
+          expect(userResponse.user).to.include(['email', 'username', 'token', 'image', 'bio'])
+          expect(userResponse.user.username).to.be.equal(u.username)
+          expect(userResponse.user.email).to.be.equal(u.email)
+          expect(userResponse.user.token).to.not.be.empty()
+          done()
+        })
       })
     })
 
@@ -250,8 +262,151 @@ describe('users endpoint', () => {
     })
   })
 
+  describe('get current user', () => {
+    it('should return the user mapped to the given valid JWT Tokem', (done) => {
+      server.inject({
+        method: 'GET',
+        url: '/api/user',
+        headers: {
+          'Authorization': 'Token ' + userAuth.token
+        }
+      }, (res) => {
+        expect(res.statusCode).to.be.equal(200)
+
+        var userResponse = JSON.parse(res.payload)
+        expect(userResponse).to.be.an.object()
+        expect(userResponse.user).to.be.an.object()
+        expect(userResponse.user).to.include(['email', 'username', 'token', 'image', 'bio'])
+        done()
+      })
+    })
+
+    it('should return a 401 Unauthorized status code with no Authorization header', (done) => {
+      server.inject('/api/user', (res) => {
+        expect(res.statusCode).to.be.equal(401)
+        done()
+      })
+    })
+
+    it('should return a 401 Unauthorized status code with a non existing user', (done) => {
+      server.inject({
+        method: 'GET',
+        url: '/api/user',
+        headers: {
+          'Authorization': 'Token ' + generateJWTToken('unknownuser')
+        }
+      }, (res) => {
+        expect(res.statusCode).to.be.equal(401)
+        done()
+      })
+    })
+  })
+
+  describe('update', () => {
+    let userAttrs = {
+      username: 'user1',
+      email: 'new.emailaddress@conduit.com',
+      password: '',
+      bio: 'Sharing is carring',
+      image: 'http://example.com/images/avatar.png'
+    }
+
+    it('should update when auhtorized', (done) => {
+      server.inject({
+        method: 'PUT',
+        url: '/api/user',
+        payload: {
+          user: userAttrs
+        },
+        headers: {
+          'Authorization': 'Token ' + userAuth.token
+        }
+      }, (res) => {
+        expect(res.statusCode).to.be.equal(200)
+        let userResponse = JSON.parse(res.payload)
+        expect(userResponse.user).to.part.includes(userAttrs)
+        done()
+      })
+    })
+
+    describe('validations', () => {
+      it('empty username should return an error', (done) => {
+        userAttrs.username = ''
+        server.inject({
+          method: 'PUT',
+          url: '/api/user',
+          payload: {
+            user: userAttrs
+          },
+          headers: {
+            'Authorization': 'Token ' + userAuth.token
+          }
+        }, (res) => {
+          expect(res.statusCode).to.be.equal(422)
+          let errorResponse = JSON.parse(res.payload)
+          expect(errorResponse.errors).to.includes(['username'])
+          done()
+        })
+      })
+
+      it('empty email should return an error', (done) => {
+        userAttrs.username = user.username
+        userAttrs.email = ''
+        server.inject({
+          method: 'PUT',
+          url: '/api/user',
+          payload: {
+            user: userAttrs
+          },
+          headers: {
+            'Authorization': 'Token ' + userAuth.token
+          }
+        }, (res) => {
+          expect(res.statusCode).to.be.equal(422)
+          let errorResponse = JSON.parse(res.payload)
+          expect(errorResponse.errors).to.includes(['email'])
+          done()
+        })
+      })
+
+      it('empty email and username should return an error', (done) => {
+        userAttrs.username = ''
+        userAttrs.email = ''
+
+        server.inject({
+          method: 'PUT',
+          url: '/api/user',
+          payload: {
+            user: userAttrs
+          },
+          headers: {
+            'Authorization': 'Token ' + userAuth.token
+          }
+        }, (res) => {
+          expect(res.statusCode).to.be.equal(422)
+          let errorResponse = JSON.parse(res.payload)
+          expect(errorResponse.errors).to.includes(['email', 'username'])
+          done()
+        })
+      })
+    })
+  })
+
   after((done) => {
-    user.remove()
-    return done()
+    databaseCleaner.clean(server.app.db.link, () => {
+      return done()
+    })
   })
 })
+
+function generateJWTToken (username) {
+  var today = new Date()
+  var exp = new Date(today)
+  exp.setDate(today.getDate() + 60)
+
+  return JWT.sign({
+    id: '4edd40c86762e0fb12000003',
+    username: username,
+    exp: parseInt(exp.getTime() / 1000)
+  }, config.auth.secret, { algorithm: config.auth.algorithm })
+}

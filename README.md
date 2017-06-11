@@ -43,6 +43,20 @@ In `lib/index.js`, we define a error-handling middleware for handling Mongoose's
 
 Requests are authenticated using the `Authorization` header with a valid JWT. We define two hapijs pluggin in `lib/modules/auth.js` that can be used to authenticate requests. The `required` plugin configures the `hapi-auth-jwt2` plugin using our application's secret and will return a 401 status code if the request cannot be authenticated. The payload of the JWT can then be accessed from `request.auth.credentials` in the endpoint. The `{auth:"optional"}` config optione in the same way as `{auth: true}`, but will *not* return a 401 status code if the request cannot be authenticated.
 
+# Contributing 
+
+- Comment one which issue you'd like to do
+- Fork the project then get the project: [Getting the project](#getting-the-project)
+- Now you have your own project URL (from your fork)
+
+```
+git remote rename origin upstream
+git remote add origin {YOUR_URL}
+```
+
+- After your first change make a PR with `[WIP]` (work in progress) added to the title. 
+- When your ready for review assign one of us
+
 # Credits
 
 The mongoose models come from the [node-express-realworld-example-app](https://github.com/gothinkster/node-express-realworld-example-app) codebase.
