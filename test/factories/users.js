@@ -8,10 +8,6 @@ module.exports = (factory) => {
     afterBuild: (model, attrs, buildOptions) => {
       model.setPassword('password')
       return model
-    },
-    afterCreate: (model, attrs, buildOptions) => {
-      model.generateJWT()
-      return model
     }
   })
 }

@@ -5,7 +5,6 @@ const internals = {
   threshold: 80,
   colors: true,
   timeout: 2000,
-  debug: true,
   verbose: true,
   globals: 'Reflect,core,_babelPolyfill,regeneratorRuntime,__core-js_shared__'
 }
