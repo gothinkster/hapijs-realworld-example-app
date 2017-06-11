@@ -1,0 +1,16 @@
+JavaScript: true
+engines:
+  eslint:
+    enabled: true
+  duplication:
+    enabled: false
+    config:
+      languages:
+      - javascript
+ratings:
+  paths:
+  - lib/**
+exclude_paths:
+- spec/**/*
+- "**/vendor/**/*"
+- test/**
