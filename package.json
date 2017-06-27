@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "./node_modules/.bin/nodemon --ignore test/ ",
-    "test": "./node_modules/.bin/lab",
-    "test-cov-html": "./node_modules/.bin/lab -r html -o coverage.html"
+    "test": "./node_modules/.bin/standard && ./node_modules/.bin/lab"
   },
   "keywords": [
     "realworl",
@@ -23,14 +22,15 @@
   "devDependencies": {
     "code": "^4.1.0",
     "database-cleaner": "^1.2.0",
+    "eslint-config-hapi": "^10.0.0",
+    "eslint-plugin-hapi": "^4.0.0",
     "factory-girl": "^4.3.0",
     "faker": "^4.1.0",
-    "inert": "^4.2.0",
     "lab": "^13.1.0",
     "labbable": "^2.1.1",
     "nodemon": "^1.11.0",
-    "tv": "^6.1.0",
-    "vision": "^4.1.1"
+    "pre-commit": "^1.2.2",
+    "standard": "^10.0.2"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
@@ -43,9 +43,14 @@
     "hapi-auth-jwt2": "^7.2.4",
     "joi": "^10.5.2",
     "jsonwebtoken": "^7.4.1",
+    "lodash": "4.17.4",
     "mongoose": "^4.10.5",
     "mongoose-unique-validator": "^1.0.5",
-    "slug": "^0.9.1",
-    "standard": "^10.0.2"
+    "slug": "^0.9.1"
+  },
+  "standard": {
+    "plugins": [
+      "hapi"
+    ]
   }
 }

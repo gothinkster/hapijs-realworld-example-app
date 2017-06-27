@@ -1,8 +1,11 @@
 # ![Node/Hapi.JS/Mongoose Example App](.github/project-logo.png)
 
-[![Build Status](https://travis-ci.org/guillaumemaka/realworld-starter-kit-hapijs.svg?branch=master)](https://travis-ci.org/guillaumemaka/realworld-starter-kit-hapijs)
-[![Code Climate](https://codeclimate.com/github/guillaumemaka/realworld-starter-kit-hapijs/badges/gpa.svg)](https://codeclimate.com/github/guillaumemaka/realworld-starter-kit-hapijs)
-[![Test Coverage](https://codeclimate.com/github/guillaumemaka/realworld-starter-kit-hapijs/badges/coverage.svg)](https://codeclimate.com/github/guillaumemaka/realworld-starter-kit-hapijs/coverage)
+[![Build Status](https://img.shields.io/travis/guillaumemaka/realworld-starter-kit-hapijs.svg?branch=master&style=flat-square)](https://travis-ci.org/guillaumemaka/realworld-starter-kit-hapijs)
+[![Code Climate](https://img.shields.io/codeclimate/github/guillaumemaka/realworld-starter-kit-hapijs.svg?style=flat-square)](https://codeclimate.com/github/guillaumemaka/realworld-starter-kit-hapijs)
+[![Code Climate Coverage](https://img.shields.io/codeclimate/coverage/github/guillaumemaka/realworld-starter-kit-hapijs.svg?style=flat-square)](https://codeclimate.com/github/guillaumemaka/realworld-starter-kit-hapijs/coverage)
+[![Code Style](https://img.shields.io/badge/code_style-standard-brightgreen.svg?style=flat-square)](https://standardjs.com/)
+[![Hapi.JS](https://img.shields.io/npm/v/hapi.svg?label=hapi&style=flat-square)](https://hapijs.com)
+[![Mongoose](https://img.shields.io/npm/v/mongoose.svg?label=mongoose&style=flat-square)](http://mongoosejs.com/)
 
 > ### Example Hapi.JS (Hapi.JS + Mongoose) codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) API spec.
 

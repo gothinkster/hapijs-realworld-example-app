@@ -8,5 +8,6 @@ factory.setAdapter(adapter)
 
 require('./users')(factory)
 require('./profiles')(factory)
+require('./articles')(factory)
 
 module.exports = factory

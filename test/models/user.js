@@ -35,8 +35,8 @@ describe('User', () => {
     // server is now available to be tested
   it('can be save', (done) => {
     user = new server.app.db.User({
-      username: 'user1',
-      email: 'user1@example.com'
+      username: 'francine',
+      email: 'francine@example.com'
     })
 
     user.setPassword('password')
@@ -45,8 +45,8 @@ describe('User', () => {
       expect(err).to.be.null()
       expect(numAffected).to.be.equal(1)
       expect(u._id).to.not.be.empty()
-      expect(u.username).to.be.equal('user1')
-      expect(u.email).to.be.equal('user1@example.com')
+      expect(u.username).to.be.equal('francine')
+      expect(u.email).to.be.equal('francine@example.com')
       expect(u.validPassword('password')).to.be.true()
       done()
     })
@@ -54,12 +54,12 @@ describe('User', () => {
 
   it('can be find', (done) => {
     server.app.db.User.findOne({
-      username: 'user1'
+      username: 'francine'
     }, (err, u) => {
       expect(err).to.be.null()
       expect(u._id).to.not.be.empty()
-      expect(u.username).to.be.equal('user1')
-      expect(u.email).to.be.equal('user1@example.com')
+      expect(u.username).to.be.equal('francine')
+      expect(u.email).to.be.equal('francine@example.com')
       done()
     })
   })
