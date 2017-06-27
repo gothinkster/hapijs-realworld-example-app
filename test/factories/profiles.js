@@ -8,6 +8,12 @@ module.exports = (factory) => {
       afterBuild: (model, attrs, buildOptions) => {
         model.setPassword('password')
         return model
+      },
+      afterCreate: (model, attrs, buildOptions) => {
+        if (buildOptions.article) {
+          return model.favorite(buildOptions.article._id)
+        }
+        return model
       }
     }
 
@@ -39,6 +45,13 @@ module.exports = (factory) => {
   factory.define('emilly_profile', User, {
     username: 'emilly',
     email: 'emilly@statefarm.com',
+    bio: 'I work at statefarm',
+    image: 'https://static.productionready.io/images/smiley-cyrus.jpg'
+  }, buildOptions)
+
+  factory.define('mike_profile', User, {
+    username: 'mike',
+    email: 'mike@statefarm.com',
     bio: 'I work at statefarm',
     image: 'https://static.productionready.io/images/smiley-cyrus.jpg'
   }, buildOptions)

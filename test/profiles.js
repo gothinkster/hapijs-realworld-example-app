@@ -12,7 +12,7 @@ const it = lab.it
 const expect = Code.expect
 const factory = require('./factories')
 const DatabaseCleaner = require('database-cleaner')
-const databaseCleaner = new DatabaseCleaner('mongodb') // type = 'mongodb|redis|couchdb'
+const databaseCleaner = new DatabaseCleaner('mongodb')
 const join = require('bluebird').join
 
 describe('profiles endpoint', () => {
@@ -49,7 +49,7 @@ describe('profiles endpoint', () => {
     })
   })
 
-  describe('get profiles', () => {
+  describe('GET /api/profiles/{username}', () => {
     it('should return the profile for the given username (No Auth)', (done) => {
       factory.attrs('jake_profile').then(attrs => {
         server.inject(`/api/profiles/${jakeProfile.username}`, (res) => {
@@ -96,7 +96,7 @@ describe('profiles endpoint', () => {
     })
   })
 
-  describe('follow profile', () => {
+  describe('POST /api/profiles/{username}/follow', () => {
     it('user can follow another user', (done) => {
       factory.create('user').then(newuser => {
         server.inject({
@@ -157,7 +157,7 @@ describe('profiles endpoint', () => {
     })
   })
 
-  describe('unfollow profile', () => {
+  describe('DELETE /api/profiles/{username}/follow', () => {
     it('user can unfollow another user', (done) => {
       server.inject({
         method: 'DELETE',
