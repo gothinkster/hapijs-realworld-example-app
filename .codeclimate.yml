@@ -1,20 +1,16 @@
-JavaScript: true
+---
 engines:
   eslint:
     enabled: true
-    checks:
-      global-require:
-        enabled: false
-      guard-for-in:
-        enabled: false
   duplication:
-    enabled: false
+    enabled: true
+    channel: cronopio
     config:
       languages:
-      - javascript
-ratings:
-  paths:
-  - lib/**
+      - ruby
+  complexity-ruby:
+    enabled: true
+    channel: beta
 exclude_paths:
 - spec/**/*
 - "**/vendor/**/*"
