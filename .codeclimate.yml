@@ -1,17 +1,13 @@
 ---
+JavaScript: true 
 engines:
   eslint:
     enabled: true
-  duplication:
-    enabled: true
-    channel: cronopio
-    config:
-      languages:
-      - ruby
-  complexity-ruby:
-    enabled: true
-    channel: beta
+ratings:
+   paths:
+   - "lib/**/*"
 exclude_paths:
+- node_modules/**/*
 - spec/**/*
 - "**/vendor/**/*"
 - test/**
