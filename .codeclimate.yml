@@ -5,6 +5,8 @@ engines:
     checks:
       global-require:
         enabled: false
+      guard-for-in:
+        enabled: false
   duplication:
     enabled: false
     config:
