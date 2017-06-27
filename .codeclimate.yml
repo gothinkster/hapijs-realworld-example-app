@@ -2,7 +2,7 @@ JavaScript: true
 engines:
   eslint:
     enabled: true
-  checks:
+    checks:
       global-require:
         enabled: false
   duplication:
