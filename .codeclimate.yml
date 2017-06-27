@@ -2,6 +2,9 @@ JavaScript: true
 engines:
   eslint:
     enabled: true
+  checks:
+      global-require:
+        enabled: false
   duplication:
     enabled: false
     config:
