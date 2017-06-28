@@ -93,7 +93,7 @@ describe('users endpoint', () => {
           }
         }
       }, (res) => {
-        expect(res.statusCode).to.be.equal(422)
+        expect(res.statusCode).to.be.equal(404)
         done()
       })
     })
