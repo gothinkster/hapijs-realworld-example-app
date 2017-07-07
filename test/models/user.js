@@ -10,7 +10,6 @@ const before = lab.before
 const after = lab.after
 const it = lab.it
 const expect = Code.expect
-
 const DatabaseCleaner = require('database-cleaner')
 const databaseCleaner = new DatabaseCleaner('mongodb') // type = 'mongodb|redis|couchdb'
 

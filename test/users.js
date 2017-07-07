@@ -11,10 +11,10 @@ const after = lab.after
 const it = lab.it
 const expect = Code.expect
 const JWT = require('jsonwebtoken')
-const config = require('../lib/config')
 const factory = require('./factories')
+const config = require('../lib/config')
 const DatabaseCleaner = require('database-cleaner')
-const databaseCleaner = new DatabaseCleaner('mongodb') // type = 'mongodb|redis|couchdb'
+const databaseCleaner = new DatabaseCleaner('mongodb')
 
 describe('users endpoint', () => {
   let server
