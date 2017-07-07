@@ -10,7 +10,6 @@ const before = lab.before
 const after = lab.after
 const it = lab.it
 const expect = Code.expect
-// const config = require('../lib/config')
 const factory = require('./factories')
 const DatabaseCleaner = require('database-cleaner')
 const databaseCleaner = new DatabaseCleaner('mongodb')

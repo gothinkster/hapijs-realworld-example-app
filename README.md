@@ -14,12 +14,18 @@ This repo is in Work In Progress — PRs and issues are welcome!
 
 # Getting started
 
-To get the Node server running locally:
+## To get the Node server running locally
 
 - Clone this repo
 - `npm install` to install all required dependencies
 - Install MongoDB Community Edition ([instructions](https://docs.mongodb.com/manual/installation/#tutorials)) and run it by executing `mongod`
 - `npm start` to start the local server
+
+## To get the Node server running locally with Docker
+
+- Clone this repo
+- `docker-compose up`
+- Hit `http://localhost:8080/`
 
 # Code Overview
 
@@ -34,17 +40,33 @@ To get the Node server running locally:
 
 ## Application Structure
 
-- `lib/index.js` - The entry point to our application. This file defines our express server and connects it to MongoDB using mongoose. It also requires the routes and models we'll be using in the application.
-- `lib/config/` - This folder contains configuration for passport as well as a central location for configuration/environment variables.
+- `lib/index.js` - The entry point to our application. This file bootstrap our HapiJS server. It also requires the routes and models we'll be using in the application.
+- `lib/config/` - This folder contains plugins configuration as well as a central location for configuration/environment variables.
 - `lib/modules/api/*` - This folder contains the routes definitions for our API.
-
-## Error Handling
-
-In `lib/index.js`, we define a error-handling middleware for handling Mongoose's `ValidationError`. This middleware will respond with a 422 status code and format the response to have [error messages the clients can understand](https://github.com/gothinkster/realworld/blob/master/API.md#errors-and-status-codes)
 
 ## Authentication
 
-Requests are authenticated using the `Authorization` header with a valid JWT. We define two hapijs pluggin in `lib/modules/auth.js` that can be used to authenticate requests. The `required` plugin configures the `hapi-auth-jwt2` plugin using our application's secret and will return a 401 status code if the request cannot be authenticated. The payload of the JWT can then be accessed from `request.auth.credentials` in the endpoint. The `{auth:"optional"}` config optione in the same way as `{auth: true}`, but will *not* return a 401 status code if the request cannot be authenticated.
+Requests are authenticated using the `Authorization` header with a valid JWT. We use one hapijs pluggin in `lib/modules/auth.js` that can be used to authenticate requests. The `hapi-auth-jwt2` plugin using our application's secret and will return a 401 status code if the request cannot be authenticated. The payload of the JWT can then be accessed from `request.auth.credentials.user` in the endpoint. 
+
+HapiJS auth mecanism provide 3 [Authentications mode](https://hapijs.com/api#route-options):
+
+The `{ auth: 'jwt' }` set authentication to required.
+
+The `{ auth: { mode: 'optional', strategy: 'jwt' } }` config options in the same way as `{ auth: 'jwt' }`, but will *not* return a 401 status code if the request cannot be authenticated (JWT must be valid).
+
+The `{ auth: 'try', strategy: 'jwt' }` similar to `optional` but invalid JWT will pass with `request.auth.isAuthenticated` set to `false` and `request.auth.credentials` set to `null`.
+
+# Error Handling
+
+ HapiJS use [Boom](https://github.com/hapijs/boom) for errors response that use a particular format response, so we need to reformat it, to meet the Backend API specs errors handling section. So we added a `preResponse` server extension, to reformat it in `lib/modules/api/index.js`. 
+
+# Validations
+
+We use [Joi](https://github.com/hapijs/joi) for validating request params/payload and response payload.
+
+# Documentation
+
+We use [hapi-swagger](https://github.com/glennjones/hapi-swagger) for the API endpoints documentation. Documentation available at `http://localhost:8080/documentations`.
 
 # Contributing 
 
