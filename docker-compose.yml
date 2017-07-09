@@ -1,0 +1,29 @@
+version: '3.2'
+services:
+  conduit_api:
+    build: .
+    image: conduit_api:1.0.0
+    depends_on:
+      - mongo
+    environment:
+      PORT: '8080'
+      NODE_ENV: 'production'
+      MONGO_DB_URI: 'mongodb://mongo:27017/conduit'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/status"]
+      interval: 10m
+      timeout: 10s
+      retries: 3
+    ports: 
+      - 8080:8080
+    restart: on-failure
+  mongo:
+    image: mongo:latest
+    expose:
+      - 27017
+    restart: on-failure
+    volumes:
+      - data:/data/db
+    
+volumes:
+  data:
