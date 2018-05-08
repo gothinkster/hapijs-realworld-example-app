@@ -39,14 +39,14 @@ describe('tags endpoint', () => {
   describe('GET /tags', () => {
     it('return all available tags', (done) => {
       server.inject('/api/tags')
-      .then(res => {
-        expect(res.statusCode).to.equal(200)
-        let jsonResponse = JSON.parse(res.payload)
-        expect(jsonResponse.tags.length).to.equal(10)
-        expect(jsonResponse.tags).to.to.contains(['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9', 'tag10'])
-        done()
-      })
-      .catch(done)
+        .then(res => {
+          expect(res.statusCode).to.equal(200)
+          let jsonResponse = JSON.parse(res.payload)
+          expect(jsonResponse.tags.length).to.equal(10)
+          expect(jsonResponse.tags).to.to.contains(['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9', 'tag10'])
+          done()
+        })
+        .catch(done)
     })
   })
 

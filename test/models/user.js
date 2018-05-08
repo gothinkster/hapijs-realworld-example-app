@@ -18,8 +18,8 @@ describe('User', () => {
   let user
 
   before((done) => {
-        // Callback fires once the server is initialized
-        // or immediately if the server is already initialized
+    // Callback fires once the server is initialized
+    // or immediately if the server is already initialized
     LabbableServer.ready((err, srv) => {
       if (err) {
         return done(err)
@@ -31,7 +31,7 @@ describe('User', () => {
     })
   })
 
-    // server is now available to be tested
+  // server is now available to be tested
   it('can be save', (done) => {
     user = new server.app.db.User({
       username: 'francine',

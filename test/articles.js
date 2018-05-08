@@ -33,44 +33,44 @@ describe('articles endpoint', () => {
       server = srv
 
       return Promise
-      .all([
-        factory.create('jake_profile'),
-        factory.create('stan_profile'),
-        factory.create('emilly_profile'),
-        factory.create('mike_profile')
-      ])
-      .then(usersResults => {
-        jake = usersResults[0]
-        stan = usersResults[1]
-        emilly = usersResults[2]
-        mike = usersResults[3]
+        .all([
+          factory.create('jake_profile'),
+          factory.create('stan_profile'),
+          factory.create('emilly_profile'),
+          factory.create('mike_profile')
+        ])
+        .then(usersResults => {
+          jake = usersResults[0]
+          stan = usersResults[1]
+          emilly = usersResults[2]
+          mike = usersResults[3]
 
-        return Promise.all([
-          factory.buildMany('article_without_assoc', 10, {author: jake._id, tagList: ['tag1']}),
-          factory.buildMany('article_without_assoc', 10, {author: stan._id, tagList: ['tag2']}),
-          factory.buildMany('article_without_assoc', 10, {author: emilly._id, tagList: ['tag3']}),
-          factory.buildMany('article_without_assoc', 10, {author: mike._id, tagList: ['tag4']})
-        ]).then(articlesResults => {
-          articles = [].concat(
-            articlesResults[0],
-            articlesResults[1],
-            articlesResults[2],
-            articlesResults[3]
-          )
+          return Promise.all([
+            factory.buildMany('article_without_assoc', 10, {author: jake._id, tagList: ['tag1']}),
+            factory.buildMany('article_without_assoc', 10, {author: stan._id, tagList: ['tag2']}),
+            factory.buildMany('article_without_assoc', 10, {author: emilly._id, tagList: ['tag3']}),
+            factory.buildMany('article_without_assoc', 10, {author: mike._id, tagList: ['tag4']})
+          ]).then(articlesResults => {
+            articles = [].concat(
+              articlesResults[0],
+              articlesResults[1],
+              articlesResults[2],
+              articlesResults[3]
+            )
 
-          return server.app.db.Article
-            .insertMany(articles, {j: false})
-            .then(docs => {
-              articles = docs
-              return Promise.all(
-                docs.slice(-20).map(a => jake.favorite(a._id))
-              ).then((userDocs) => {
-                jake = userDocs.pop()
-                return done()
+            return server.app.db.Article
+              .insertMany(articles, {j: false})
+              .then(docs => {
+                articles = docs
+                return Promise.all(
+                  docs.slice(-20).map(a => jake.favorite(a._id))
+                ).then((userDocs) => {
+                  jake = userDocs.pop()
+                  return done()
+                })
               })
-            })
-        })
-      }).catch(done)
+          })
+        }).catch(done)
     })
   })
 
@@ -153,11 +153,11 @@ describe('articles endpoint', () => {
           jake.follow(emilly._id),
           jake.follow(mike._id)
         ])
-        .then((results) => {
-          jake = results.pop()
-          return done
-        })
-        .catch(done)
+          .then((results) => {
+            jake = results.pop()
+            return done
+          })
+          .catch(done)
       })
 
       it('return followed user 20 most recent articles', (done) => {
@@ -341,16 +341,16 @@ describe('articles endpoint', () => {
           'Authorization': `Token ${jake.generateJWT()}`
         }
       })
-      .then(res => {
-        expect(res.statusCode).to.equal(201)
-        const jsonResponse = JSON.parse(res.payload)
-        expect(jsonResponse.article.slug).to.be.equal('sample-title')
-        expect(jsonResponse.article.title).to.be.equal(payload.title)
-        expect(jsonResponse.article.description).to.be.equal(payload.description)
-        expect(jsonResponse.article.body).to.be.equal(payload.body)
-        expect(jsonResponse.article.tagList).to.be.equal(payload.tagList)
-        done()
-      }).catch(done)
+        .then(res => {
+          expect(res.statusCode).to.equal(201)
+          const jsonResponse = JSON.parse(res.payload)
+          expect(jsonResponse.article.slug).to.be.equal('sample-title')
+          expect(jsonResponse.article.title).to.be.equal(payload.title)
+          expect(jsonResponse.article.description).to.be.equal(payload.description)
+          expect(jsonResponse.article.body).to.be.equal(payload.body)
+          expect(jsonResponse.article.tagList).to.be.equal(payload.tagList)
+          done()
+        }).catch(done)
     })
 
     it('should not create an article without authentication', (done) => {
@@ -734,21 +734,21 @@ describe('articles endpoint', () => {
             c.article = article._id
             return c.save()
           })).then(() => {
-            return done
-          })
+          return done
+        })
       })// .catch(done)
     })
 
     it('return all comment for an article', (done) => {
       server.inject(`/api/articles/${article.slug}/comments`)
-      .then(res => {
-        expect(res.statusCode).to.be.equal(200)
-        const jsonResponse = JSON.parse(res.payload)
-        expect(jsonResponse.comments).to.be.an.array()
-        expect(jsonResponse.comments.length).to.be.equal(5)
-        done()
-      })
-      .catch(done)
+        .then(res => {
+          expect(res.statusCode).to.be.equal(200)
+          const jsonResponse = JSON.parse(res.payload)
+          expect(jsonResponse.comments).to.be.an.array()
+          expect(jsonResponse.comments.length).to.be.equal(5)
+          done()
+        })
+        .catch(done)
     })
   })
 
@@ -818,10 +818,10 @@ describe('articles endpoint', () => {
 
     before((done) => {
       Promise.resolve(factory.createMany('article_with_comments', 2))
-      .then(savedArticles => {
-        articlesWithComent = savedArticles
-        return done()
-      }).catch(done)
+        .then(savedArticles => {
+          articlesWithComent = savedArticles
+          return done()
+        }).catch(done)
     })
 
     it('delete a comment with JWT', (done) => {
