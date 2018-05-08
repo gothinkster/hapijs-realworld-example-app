@@ -21,7 +21,7 @@ Install [Node.JS LTS version](https://nodejs.org/en/download/)
 - `cd /path/where/your/cloned/the/repo`
 - `npm install` to install all required dependencies
 - Install MongoDB Community Edition ([instructions](https://docs.mongodb.com/manual/installation/#tutorials)) and run it by executing `mongod -d /path/where/you/want/to/store/the/data`
-- Run `./generate_secret_key --encoding base64`
+- Run `node ./generate_secret_key --encoding base64`
 - `npm start` to start the local server
 - The API is available at `http://localhost:8080/api`
 
@@ -30,7 +30,7 @@ Install [Node.JS LTS version](https://nodejs.org/en/download/)
 - Install [Docker](https://docs.docker.com/engine/installation/)
 - Clone this repo
 - `cd /path/where/your/cloned/the/repo`
-- Run `./generate_secret_key --encoding base64`
+- Run `node ./generate_secret_key --encoding base64`
 - `docker-compose up`
 - The API is available at `http://localhost:8080/api`
 
