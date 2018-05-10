@@ -61,6 +61,11 @@ HapiJS auth mecanism provide 3 [Authentications mode](https://hapijs.com/api#rou
 - The `{ auth: { mode: 'optional', strategy: 'jwt' } }` config options in the same way as `{ auth: 'jwt' }`, but will *not* return a 401 status code if the request cannot be authenticated (JWT must be valid).
 - The `{ auth: 'try', strategy: 'jwt' }` similar to `optional` but invalid JWT will pass with `request.auth.isAuthenticated` set to `false` and `request.auth.credentials` set to `null`.
 
+To access restricted API, you can use the following token: 
+`eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwibmFtZSI6IkFudGhvbnkgVmFsaWQgVXNlciIsImlhdCI6MTQyNTQ3MzUzNX0.KA68l60mjiC8EXaC2odnjFwdIDxE__iDu5RwLdN1F2A`
+
+For more information, see https://github.com/dwyl/hapi-auth-jwt2
+
 # Error Handling
 
  HapiJS use [Boom](https://github.com/hapijs/boom) for errors response that use a particular format response, so we need to reformat it, to meet the Backend API specs errors handling section. So we added a `preResponse` server extension, to reformat it in `lib/modules/api/index.js`. 
