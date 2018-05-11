@@ -27,7 +27,6 @@
     "factory-girl": "^5.0.2",
     "faker": "^4.1.0",
     "lab": "^15.4.1",
-    "labbable": "^2.1.2",
     "nodemon": "^1.17.4",
     "pre-commit": "^1.2.2",
     "standard": "^11.0.1"
