@@ -62,12 +62,12 @@ describe('profiles endpoint', () => {
     })
 
     it('should return the profile for the given username and following flagged to true (with Auth)', (done) => {
-      factory.attrs('emilly_profile', {following: true}).then(attrs => {
+      factory.attrs('emilly_profile', { following: true }).then(attrs => {
         server.inject({
           method: 'GET',
           url: `/api/profiles/${emillyProfile.username}`,
           headers: {
-            'Authorization': 'Token ' + jakeProfile.generateJWT()
+            'Authorization': jakeProfile.generateJWT()
           }
         }, (res) => {
           expect(res.statusCode).to.be.equal(200)
@@ -84,7 +84,7 @@ describe('profiles endpoint', () => {
           method: 'GET',
           url: `/api/profiles/${stanProfile.username}`,
           headers: {
-            'Authorization': 'Token ' + jakeProfile.generateJWT()
+            'Authorization': jakeProfile.generateJWT()
           }
         }, (res) => {
           expect(res.statusCode).to.be.equal(200)
@@ -103,7 +103,7 @@ describe('profiles endpoint', () => {
           method: 'POST',
           url: `/api/profiles/${newuser.username}/follow`,
           headers: {
-            'Authorization': 'Token ' + jakeProfile.generateJWT()
+            'Authorization': jakeProfile.generateJWT()
           }
         }, (res) => {
           expect(res.statusCode).to.be.equal(200)
@@ -132,7 +132,7 @@ describe('profiles endpoint', () => {
           method: 'POST',
           url: `/api/profiles/${stanProfile.username}/follow`,
           headers: {
-            'Authorization': 'Token ' + ghost.generateJWT()
+            'Authorization': ghost.generateJWT()
           }
         }, (res) => {
           expect(res.statusCode).to.be.equal(401)
@@ -147,7 +147,7 @@ describe('profiles endpoint', () => {
           method: 'POST',
           url: `/api/profiles/${ghost.username}/follow`,
           headers: {
-            'Authorization': 'Token ' + emillyProfile.generateJWT()
+            'Authorization': emillyProfile.generateJWT()
           }
         }, (res) => {
           expect(res.statusCode).to.be.equal(404)
@@ -163,7 +163,7 @@ describe('profiles endpoint', () => {
         method: 'DELETE',
         url: `/api/profiles/${emillyProfile.username}/follow`,
         headers: {
-          'Authorization': 'Token ' + jakeProfile.generateJWT()
+          'Authorization': jakeProfile.generateJWT()
         }
       }, (res) => {
         expect(res.statusCode).to.be.equal(200)
@@ -189,7 +189,7 @@ describe('profiles endpoint', () => {
           method: 'DELETE',
           url: `/api/profiles/${stanProfile.username}/follow`,
           headers: {
-            'Authorization': 'Token ' + ghost.generateJWT()
+            'Authorization': ghost.generateJWT()
           }
         }, (res) => {
           expect(res.statusCode).to.be.equal(401)
@@ -204,7 +204,7 @@ describe('profiles endpoint', () => {
           method: 'DELETE',
           url: `/api/profiles/${ghost.username}/follow`,
           headers: {
-            'Authorization': 'Token ' + emillyProfile.generateJWT()
+            'Authorization': emillyProfile.generateJWT()
           }
         }, (res) => {
           expect(res.statusCode).to.be.equal(404)

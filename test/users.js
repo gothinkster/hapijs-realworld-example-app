@@ -245,7 +245,7 @@ describe('users endpoint', () => {
         method: 'GET',
         url: '/api/user',
         headers: {
-          'Authorization': 'Token ' + userAuth.token
+          'Authorization': userAuth.token
         }
       })
 
@@ -268,7 +268,7 @@ describe('users endpoint', () => {
         method: 'GET',
         url: '/api/user',
         headers: {
-          'Authorization': 'Token ' + generateJWTToken('unknownuser')
+          'Authorization': generateJWTToken('unknownuser')
         }
       })
 
@@ -293,7 +293,7 @@ describe('users endpoint', () => {
           user: userAttrs
         },
         headers: {
-          'Authorization': 'Token ' + userAuth.token
+          'Authorization': userAuth.token
         }
       })
 
@@ -313,7 +313,7 @@ describe('users endpoint', () => {
             user: userAttrs
           },
           headers: {
-            'Authorization': 'Token ' + userAuth.token
+            'Authorization': userAuth.token
           }
         })
 
@@ -333,7 +333,7 @@ describe('users endpoint', () => {
             user: userAttrs
           },
           headers: {
-            'Authorization': 'Token ' + userAuth.token
+            'Authorization': userAuth.token
           }
         })
 
@@ -353,7 +353,7 @@ describe('users endpoint', () => {
             user: userAttrs
           },
           headers: {
-            'Authorization': 'Token ' + userAuth.token
+            'Authorization': userAuth.token
           }
         })
 
