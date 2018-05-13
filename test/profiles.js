@@ -48,6 +48,7 @@ describe('profiles endpoint', () => {
 
       expect(res.statusCode).to.be.equal(200)
       var jsonResponse = JSON.parse(res.payload)
+
       expect(jsonResponse.user).to.part.include(attrs)
     })
 
