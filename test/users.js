@@ -2,7 +2,7 @@
 
 const Code = require('code')
 const Lab = require('lab')
-const LabbableServer = require('../lib')
+const Server = require('../lib')
 
 const lab = exports.lab = Lab.script()
 const describe = lab.describe
@@ -21,30 +21,18 @@ describe('users endpoint', () => {
   let user
   let userAuth
 
-  before((done) => {
-    // Callback fires once the server is initialized
-    // or immediately if the server is already initialized
-    LabbableServer.ready((err, srv) => {
-      if (err) {
-        return done(err)
-      }
+  before(async () => {
+    server = await Server.deployment()
+    user = await factory.create('user')
 
-      server = srv
-
-      return factory.create('user').then((u) => {
-        user = u
-        userAuth = user.toAuthJSON()
-        userAuth.image = user.image || null
-        userAuth.bio = user.bio || null
-
-        return done()
-      })
-    })
+    userAuth = user.toAuthJSON()
+    userAuth.image = user.image || null
+    userAuth.bio = user.bio || null
   })
 
   describe('login', () => {
-    it('return status 200 with valid credentials', (done) => {
-      server.inject({
+    it('return status 200 with valid credentials', async () => {
+      const res = await server.inject({
         method: 'POST',
         url: '/api/users/login',
         payload: {
@@ -53,21 +41,20 @@ describe('users endpoint', () => {
             'password': 'password'
           }
         }
-      }, (res) => {
-        var payload = JSON.parse(res.payload)
-        expect(res.statusCode).to.be.equal(200)
-        expect(payload).to.be.an.object()
-        expect(payload.user).to.not.be.undefined()
-        expect(payload.user).to.include(['email', 'username', 'token', 'image', 'bio'])
-        expect(payload.user.token).to.not.be.empty()
-        expect(payload.user.username).to.be.equal(user.username)
-        expect(payload.user.email).to.be.equal(user.email)
-        done()
       })
+
+      var payload = JSON.parse(res.payload)
+      expect(res.statusCode).to.be.equal(200)
+      expect(payload).to.be.an.object()
+      expect(payload.user).to.not.be.undefined()
+      expect(payload.user).to.include(['email', 'username', 'token', 'image', 'bio'])
+      expect(payload.user.token).to.not.be.empty()
+      expect(payload.user.username).to.be.equal(user.username)
+      expect(payload.user.email).to.be.equal(user.email)
     })
 
-    it('return status 401 with invalid password', (done) => {
-      server.inject({
+    it('return status 401 with invalid password', async () => {
+      const res = await server.inject({
         method: 'POST',
         url: '/api/users/login',
         payload: {
@@ -76,14 +63,13 @@ describe('users endpoint', () => {
             'password': 'invalidpassword'
           }
         }
-      }, (res) => {
-        expect(res.statusCode).to.be.equal(401)
-        done()
       })
+
+      expect(res.statusCode).to.be.equal(401)
     })
 
-    it('return status 422 with unknown credentials', (done) => {
-      server.inject({
+    it('return status 422 with unknown credentials', async () => {
+      const res = await server.inject({
         method: 'POST',
         url: '/api/users/login',
         payload: {
@@ -92,15 +78,14 @@ describe('users endpoint', () => {
             'password': 'p@ssw@rd'
           }
         }
-      }, (res) => {
-        expect(res.statusCode).to.be.equal(404)
-        done()
       })
+
+      expect(res.statusCode).to.be.equal(404)
     })
 
     describe('validations', () => {
-      it('empty email field should return an error', (done) => {
-        server.inject({
+      it('empty email field should return an error', async () => {
+        const res = await server.inject({
           method: 'POST',
           url: '/api/users/login',
           payload: {
@@ -109,16 +94,15 @@ describe('users endpoint', () => {
               'password': 'p@ssw@rd'
             }
           }
-        }, (res) => {
-          var errorPayload = JSON.parse(res.payload)
-          expect(res.statusCode).to.be.equal(422)
-          expect(errorPayload.errors.email[0]).to.contain('"email" must be a valid email')
-          done()
         })
+
+        var errorPayload = JSON.parse(res.payload)
+        expect(res.statusCode).to.be.equal(422)
+        expect(errorPayload.errors.email[0]).to.contain('"email" must be a valid email')
       })
 
-      it('empty password field should return an error', (done) => {
-        server.inject({
+      it('empty password field should return an error', async () => {
+        const res = await server.inject({
           method: 'POST',
           url: '/api/users/login',
           payload: {
@@ -127,16 +111,15 @@ describe('users endpoint', () => {
               'password': ''
             }
           }
-        }, (res) => {
-          var errorPayload = JSON.parse(res.payload)
-          expect(res.statusCode).to.be.equal(422)
-          expect(errorPayload.errors.password[0]).to.contain('"password" is not allowed to be empty')
-          done()
         })
+
+        var errorPayload = JSON.parse(res.payload)
+        expect(res.statusCode).to.be.equal(422)
+        expect(errorPayload.errors.password[0]).to.contain('"password" is not allowed to be empty')
       })
 
-      it('empty password and email field should return an error', (done) => {
-        server.inject({
+      it('empty password and email field should return an error', async () => {
+        const res = await server.inject({
           method: 'POST',
           url: '/api/users/login',
           payload: {
@@ -145,45 +128,43 @@ describe('users endpoint', () => {
               'password': ''
             }
           }
-        }, (res) => {
-          var errorPayload = JSON.parse(res.payload)
-          expect(res.statusCode).to.be.equal(422)
-          expect(errorPayload.errors.email[0]).to.contain('"email" must be a valid email')
-          expect(errorPayload.errors.password[0]).to.contain('"password" is not allowed to be empty')
-          done()
         })
+
+        var errorPayload = JSON.parse(res.payload)
+        expect(res.statusCode).to.be.equal(422)
+        expect(errorPayload.errors.email[0]).to.contain('"email" must be a valid email')
+        expect(errorPayload.errors.password[0]).to.contain('"password" is not allowed to be empty')
       })
     })
   })
 
-  describe('register', () => {
-    it('should register a user with valid information', (done) => {
-      factory.build('user', {username: 'stansmith', email: 'stansmith@example.com'}).then((u) => {
-        server.inject({
-          method: 'POST',
-          url: '/api/users',
-          payload: {
-            user: {
-              email: u.email,
-              username: u.username,
-              password: 'password'
-            }
+  describe('register', async () => {
+    it('should register a user with valid information', async () => {
+      const u = await factory.build('user', { username: 'stansmith', email: 'stansmith@example.com' })
+
+      const res = await server.inject({
+        method: 'POST',
+        url: '/api/users',
+        payload: {
+          user: {
+            email: u.email,
+            username: u.username,
+            password: 'password'
           }
-        }, (res) => {
-          expect(res.statusCode).to.be.equal(200)
-          var userResponse = JSON.parse(res.payload)
-          expect(userResponse.user).to.include(['email', 'username', 'token', 'image', 'bio'])
-          expect(userResponse.user.username).to.be.equal(u.username)
-          expect(userResponse.user.email).to.be.equal(u.email)
-          expect(userResponse.user.token).to.not.be.empty()
-          done()
-        })
+        }
       })
+
+      expect(res.statusCode).to.be.equal(200)
+      var userResponse = JSON.parse(res.payload)
+      expect(userResponse.user).to.include(['email', 'username', 'token', 'image', 'bio'])
+      expect(userResponse.user.username).to.be.equal(u.username)
+      expect(userResponse.user.email).to.be.equal(u.email)
+      expect(userResponse.user.token).to.not.be.empty()
     })
 
     describe('validations', () => {
-      it('on an empty email should return an error', (done) => {
-        server.inject({
+      it('on an empty email should return an error', async () => {
+        const res = await server.inject({
           method: 'POST',
           url: '/api/users',
           payload: {
@@ -193,16 +174,15 @@ describe('users endpoint', () => {
               password: 'password'
             }
           }
-        }, (res) => {
-          var errorPayload = JSON.parse(res.payload)
-          expect(res.statusCode).to.be.equal(422)
-          expect(errorPayload.errors.email[0]).to.contain('"email" must be a valid email')
-          done()
         })
+
+        var errorPayload = JSON.parse(res.payload)
+        expect(res.statusCode).to.be.equal(422)
+        expect(errorPayload.errors.email[0]).to.contain('"email" must be a valid email')
       })
 
-      it('on an empty username should return an error', (done) => {
-        server.inject({
+      it('on an empty username should return an error', async () => {
+        const res = await server.inject({
           method: 'POST',
           url: '/api/users',
           payload: {
@@ -212,16 +192,15 @@ describe('users endpoint', () => {
               password: 'password'
             }
           }
-        }, (res) => {
-          var errorPayload = JSON.parse(res.payload)
-          expect(res.statusCode).to.be.equal(422)
-          expect(errorPayload.errors.username[0]).to.contain('"username" is not allowed to be empty')
-          done()
         })
+
+        var errorPayload = JSON.parse(res.payload)
+        expect(res.statusCode).to.be.equal(422)
+        expect(errorPayload.errors.username[0]).to.contain('"username" is not allowed to be empty')
       })
 
-      it('on an empty password should return an error', (done) => {
-        server.inject({
+      it('on an empty password should return an error', async () => {
+        const res = await server.inject({
           method: 'POST',
           url: '/api/users',
           payload: {
@@ -231,16 +210,15 @@ describe('users endpoint', () => {
               password: ''
             }
           }
-        }, (res) => {
-          var errorPayload = JSON.parse(res.payload)
-          expect(res.statusCode).to.be.equal(422)
-          expect(errorPayload.errors.password[0]).to.contain('"password" is not allowed to be empty')
-          done()
         })
+
+        var errorPayload = JSON.parse(res.payload)
+        expect(res.statusCode).to.be.equal(422)
+        expect(errorPayload.errors.password[0]).to.contain('"password" is not allowed to be empty')
       })
 
-      it('on an empty email, username and password should return an error', (done) => {
-        server.inject({
+      it('on an empty email, username and password should return an error', async () => {
+        const res = await server.inject({
           method: 'POST',
           url: '/api/users',
           payload: {
@@ -250,55 +228,51 @@ describe('users endpoint', () => {
               password: ''
             }
           }
-        }, (res) => {
-          var errorPayload = JSON.parse(res.payload)
-          expect(res.statusCode).to.be.equal(422)
-          expect(errorPayload.errors.email[0]).to.contain('"email" must be a valid email')
-          expect(errorPayload.errors.username[0]).to.contain('"username" is not allowed to be empty')
-          expect(errorPayload.errors.password[0]).to.contain('"password" is not allowed to be empty')
-          done()
         })
+
+        var errorPayload = JSON.parse(res.payload)
+        expect(res.statusCode).to.be.equal(422)
+        expect(errorPayload.errors.email[0]).to.contain('"email" must be a valid email')
+        expect(errorPayload.errors.username[0]).to.contain('"username" is not allowed to be empty')
+        expect(errorPayload.errors.password[0]).to.contain('"password" is not allowed to be empty')
       })
     })
   })
 
   describe('get current user', () => {
-    it('should return the user mapped to the given valid JWT Tokem', (done) => {
-      server.inject({
+    it('should return the user mapped to the given valid JWT Tokem', async () => {
+      const res = await server.inject({
         method: 'GET',
         url: '/api/user',
         headers: {
-          'Authorization': 'Token ' + userAuth.token
+          'Authorization': userAuth.token
         }
-      }, (res) => {
-        expect(res.statusCode).to.be.equal(200)
-
-        var userResponse = JSON.parse(res.payload)
-        expect(userResponse).to.be.an.object()
-        expect(userResponse.user).to.be.an.object()
-        expect(userResponse.user).to.include(['email', 'username', 'token', 'image', 'bio'])
-        done()
       })
+
+      expect(res.statusCode).to.be.equal(200)
+
+      var userResponse = JSON.parse(res.payload)
+      expect(userResponse).to.be.an.object()
+      expect(userResponse.user).to.be.an.object()
+      expect(userResponse.user).to.include(['email', 'username', 'token', 'image', 'bio'])
     })
 
-    it('should return a 401 Unauthorized status code with no Authorization header', (done) => {
-      server.inject('/api/user', (res) => {
-        expect(res.statusCode).to.be.equal(401)
-        done()
-      })
+    it('should return a 401 Unauthorized status code with no Authorization header', async () => {
+      const res = await server.inject('/api/user')
+
+      expect(res.statusCode).to.be.equal(401)
     })
 
-    it('should return a 401 Unauthorized status code with a non existing user', (done) => {
-      server.inject({
+    it('should return a 401 Unauthorized status code with a non existing user', async () => {
+      const res = await server.inject({
         method: 'GET',
         url: '/api/user',
         headers: {
-          'Authorization': 'Token ' + generateJWTToken('unknownuser')
+          'Authorization': generateJWTToken('unknownuser')
         }
-      }, (res) => {
-        expect(res.statusCode).to.be.equal(401)
-        done()
       })
+
+      expect(res.statusCode).to.be.equal(401)
     })
   })
 
@@ -311,91 +285,87 @@ describe('users endpoint', () => {
       image: 'http://example.com/images/avatar.png'
     }
 
-    it('should update when auhtorized', (done) => {
-      server.inject({
+    it('should update when auhtorized', async () => {
+      const res = await server.inject({
         method: 'PUT',
         url: '/api/user',
         payload: {
           user: userAttrs
         },
         headers: {
-          'Authorization': 'Token ' + userAuth.token
+          'Authorization': userAuth.token
         }
-      }, (res) => {
-        expect(res.statusCode).to.be.equal(200)
-        let userResponse = JSON.parse(res.payload)
-        expect(userResponse.user).to.part.includes(userAttrs)
-        done()
       })
+
+      expect(res.statusCode).to.be.equal(200)
+      let userResponse = JSON.parse(res.payload)
+      expect(userResponse.user).to.part.includes(userAttrs)
     })
 
     describe('validations', () => {
-      it('empty username should return an error', (done) => {
+      it('empty username should return an error', async () => {
         userAttrs.username = ''
-        server.inject({
+
+        const res = await server.inject({
           method: 'PUT',
           url: '/api/user',
           payload: {
             user: userAttrs
           },
           headers: {
-            'Authorization': 'Token ' + userAuth.token
+            'Authorization': userAuth.token
           }
-        }, (res) => {
-          expect(res.statusCode).to.be.equal(422)
-          let errorResponse = JSON.parse(res.payload)
-          expect(errorResponse.errors).to.includes(['username'])
-          done()
         })
+
+        expect(res.statusCode).to.be.equal(422)
+        let errorResponse = JSON.parse(res.payload)
+        expect(errorResponse.errors).to.includes(['username'])
       })
 
-      it('empty email should return an error', (done) => {
+      it('empty email should return an error', async () => {
         userAttrs.username = user.username
         userAttrs.email = ''
-        server.inject({
+
+        const res = await server.inject({
           method: 'PUT',
           url: '/api/user',
           payload: {
             user: userAttrs
           },
           headers: {
-            'Authorization': 'Token ' + userAuth.token
+            'Authorization': userAuth.token
           }
-        }, (res) => {
-          expect(res.statusCode).to.be.equal(422)
-          let errorResponse = JSON.parse(res.payload)
-          expect(errorResponse.errors).to.includes(['email'])
-          done()
         })
+
+        expect(res.statusCode).to.be.equal(422)
+        let errorResponse = JSON.parse(res.payload)
+        expect(errorResponse.errors).to.includes(['email'])
       })
 
-      it('empty email and username should return an error', (done) => {
+      it('empty email and username should return an error', async () => {
         userAttrs.username = ''
         userAttrs.email = ''
 
-        server.inject({
+        const res = await server.inject({
           method: 'PUT',
           url: '/api/user',
           payload: {
             user: userAttrs
           },
           headers: {
-            'Authorization': 'Token ' + userAuth.token
+            'Authorization': userAuth.token
           }
-        }, (res) => {
-          expect(res.statusCode).to.be.equal(422)
-          let errorResponse = JSON.parse(res.payload)
-          expect(errorResponse.errors).to.includes(['email', 'username'])
-          done()
         })
+
+        expect(res.statusCode).to.be.equal(422)
+        let errorResponse = JSON.parse(res.payload)
+        expect(errorResponse.errors).to.includes(['email', 'username'])
       })
     })
   })
 
-  after((done) => {
-    databaseCleaner.clean(server.app.db.link, () => {
-      return done()
-    })
+  after(async () => {
+    await databaseCleaner.clean(server.app.db.link)
   })
 })
 

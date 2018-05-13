@@ -2,7 +2,7 @@
 
 const Code = require('code')
 const Lab = require('lab')
-const LabbableServer = require('../lib')
+const Server = require('../lib')
 
 const lab = exports.lab = Lab.script()
 const describe = lab.describe
@@ -15,44 +15,31 @@ const DatabaseCleaner = require('database-cleaner')
 const databaseCleaner = new DatabaseCleaner('mongodb')
 const Promise = require('bluebird')
 
-describe('tags endpoint', () => {
+describe('tags endpoint', async () => {
   let server
 
-  before((done) => {
-    LabbableServer.ready((err, srv) => {
-      if (err) {
-        return done(err)
-      }
+  before(async () => {
+    server = await Server.deployment()
 
-      server = srv
-
-      return Promise.all([
-        factory.create('article', { tagList: ['tag1', 'tag2', 'tag3'] }),
-        factory.create('article', { tagList: ['tag4', 'tag5', 'tag6'] }),
-        factory.create('article', { tagList: ['tag7', 'tag8', 'tag9', 'tag10'] })
-      ]).then(_ => {
-        return done()
-      }).catch(done)
-    })
+    await Promise.all([
+      factory.create('article', { tagList: ['tag1', 'tag2', 'tag3'] }),
+      factory.create('article', { tagList: ['tag4', 'tag5', 'tag6'] }),
+      factory.create('article', { tagList: ['tag7', 'tag8', 'tag9', 'tag10'] })
+    ])
   })
 
   describe('GET /tags', () => {
-    it('return all available tags', (done) => {
-      server.inject('/api/tags')
-      .then(res => {
-        expect(res.statusCode).to.equal(200)
-        let jsonResponse = JSON.parse(res.payload)
-        expect(jsonResponse.tags.length).to.equal(10)
-        expect(jsonResponse.tags).to.to.contains(['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9', 'tag10'])
-        done()
-      })
-      .catch(done)
+    it('return all available tags', async () => {
+      const res = await server.inject('/api/tags')
+      expect(res.statusCode).to.equal(200)
+
+      let jsonResponse = JSON.parse(res.payload)
+      expect(jsonResponse.tags.length).to.equal(10)
+      expect(jsonResponse.tags).to.contains(['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9', 'tag10'])
     })
   })
 
-  after((done) => {
-    databaseCleaner.clean(server.app.db.link, () => {
-      return done()
-    })
+  after(async () => {
+    await databaseCleaner.clean(server.app.db.link)
   })
 })

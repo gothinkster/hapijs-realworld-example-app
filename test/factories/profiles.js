@@ -62,12 +62,12 @@ module.exports = (factory) => {
     bio: 'I worked at statefarm',
     image: 'https://static.productionready.io/images/smiley-cyrus.jpg'
   },
-    {
-      afterCreate: (model, attrs, opts) => {
-        model.remove((err, model) => {
-          if (err) throw err
-        })
-        return model
-      }
-    })
+  {
+    afterCreate: (model, attrs, opts) => {
+      model.remove((err, model) => {
+        if (err) throw err
+      })
+      return model
+    }
+  })
 }

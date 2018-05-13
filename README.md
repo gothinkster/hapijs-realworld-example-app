@@ -21,7 +21,7 @@ Install [Node.JS LTS version](https://nodejs.org/en/download/)
 - `cd /path/where/your/cloned/the/repo`
 - `npm install` to install all required dependencies
 - Install MongoDB Community Edition ([instructions](https://docs.mongodb.com/manual/installation/#tutorials)) and run it by executing `mongod -d /path/where/you/want/to/store/the/data`
-- Run `./generate_secret_key --encoding base64`
+- Run `node ./generate_secret_key --encoding base64`
 - `npm start` to start the local server
 - The API is available at `http://localhost:8080/api`
 
@@ -30,7 +30,7 @@ Install [Node.JS LTS version](https://nodejs.org/en/download/)
 - Install [Docker](https://docs.docker.com/engine/installation/)
 - Clone this repo
 - `cd /path/where/your/cloned/the/repo`
-- Run `./generate_secret_key --encoding base64`
+- Run `node ./generate_secret_key --encoding base64`
 - `docker-compose up`
 - The API is available at `http://localhost:8080/api`
 
@@ -60,6 +60,8 @@ HapiJS auth mecanism provide 3 [Authentications mode](https://hapijs.com/api#rou
 - The `{ auth: 'jwt' }` set authentication to required.
 - The `{ auth: { mode: 'optional', strategy: 'jwt' } }` config options in the same way as `{ auth: 'jwt' }`, but will *not* return a 401 status code if the request cannot be authenticated (JWT must be valid).
 - The `{ auth: 'try', strategy: 'jwt' }` similar to `optional` but invalid JWT will pass with `request.auth.isAuthenticated` set to `false` and `request.auth.credentials` set to `null`.
+
+To access restricted API, create an user then, you'll get its access token by calling api/users/login.
 
 # Error Handling
 
